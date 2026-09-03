@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U.S. Cyclist Crash Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="wrap">
+  <div class="eyebrow">NATIONAL CYCLIST SAFETY MONITOR · v{{ version }}</div>
+  <h1>U.S. Cyclist Crash Monitor</h1>
+  <p class="sub">Fatal and serious-injury crashes involving cyclists and motor vehicles.</p>
+
+  <form class="filters" method="get" action="/">
+    <label>TIME PERIOD
+      <select name="period">
+        <option value="7d" {% if period=='7d' %}selected{% endif %}>7 Days</option>
+        <option value="30d" {% if period=='30d' %}selected{% endif %}>30 Days</option>
+        <option value="90d" {% if period=='90d' %}selected{% endif %}>90 Days</option>
+      </select>
+    </label>
+    <label>LOCATION
+      <select name="location">
+        <option>All Locations</option>
+        {% for loc in locations %}<option {% if location==loc %}selected{% endif %}>{{ loc }}</option>{% endfor %}
+      </select>
+    </label>
+    <button>Apply Filters</button>
+  </form>
+
+  <a class="scan" href="{{ url_for('scan_route', period=period, location=location) }}">Scan for new reports</a>
+
+  <section class="cards">
+    <div><strong>{{ killed }}</strong><span>Killed</span><small>{{ period }}</small></div>
+    <div><strong>{{ injured }}</strong><span>Seriously Injured</span><small>{{ period }}</small></div>
+    <div><strong>{{ review }}</strong><span>Review Needed</span><small>{{ period }}</small></div>
+    <div><strong>{{ total }}</strong><span>Total</span><small>{{ period }}</small></div>
+  </section>
+
+  <div class="heading"><h2>U.S. Incident Reports</h2><span>{{ total }}</span></div>
+  {% for r in rows %}
+  <article class="incident">
+    <div class="tag">{{ r.status }} · {{ r.location }}</div>
+    <h3>{{ r.title }}</h3>
+    <p>{{ r.summary }}</p>
+    <div class="meta"><span><b>ACCIDENT DATE</b>{{ r.published }}</span><span><b>LOCATION</b>{{ r.location }}</span><span><b>SOURCE</b>{{ r.source }}</span></div>
+    <a href="{{ r.url }}" target="_blank" rel="noopener">Read original article ↗</a>
+  </article>
+  {% else %}
+  <article class="incident"><h3>No incidents found for these filters.</h3><p>Click “Scan for new reports” to search current news sources.</p></article>
+  {% endfor %}
+</main>
+</body>
+</html>
