@@ -29,7 +29,7 @@
     <button>Apply Filters</button>
   </form>
 
-  <a class="scan" href="{{ url_for('scan_route', period=period, location=location) }}">Scan for new reports</a>
+  <a class="scan" href="{{ url_for('scan', period=period, location=location) }}">Scan for new reports</a>
 
   <section class="cards">
     <div><strong>{{ killed }}</strong><span>Killed</span><small>{{ period }}</small></div>
